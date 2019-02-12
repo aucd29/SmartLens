@@ -21,10 +21,6 @@ import javax.inject.Singleton
  * https://github.com/googlesamples/android-architecture-components/tree/master/GithubBrowserSample/app/src/main/java/com/android/example/github
  */
 
-// androidx 옵션을 주면 java 파일은 support 를 바라보고 있지만
-// 내부적으로는 androidx 로 class 를 생성해서 이를 반영한다.
-// 며칠 삽질을 했다..=_ =
-
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class
     , AppModule::class
