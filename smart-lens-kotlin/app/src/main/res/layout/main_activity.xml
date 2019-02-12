@@ -61,8 +61,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:bindAdapter="@{tfmodel.adapter}"
-                app:bindItems="@{tfmodel.items}"
+                app:bindAdapter="@{tfModel.adapter}"
+                app:bindItems="@{tfModel.items}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
