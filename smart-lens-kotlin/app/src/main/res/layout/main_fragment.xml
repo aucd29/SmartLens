@@ -1,0 +1,16 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="model" type="com.example.smartlenskotlin.view.main.MainViewModel" />
+    </data>
+
+    <com.example.smartlenskotlin.widget.AutoFitTextureView
+            android:id="@+id/texture"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+    />
+</layout>

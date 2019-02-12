@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">smart-lens-kotlin</string>
+
+    <!--main-->
+    <string name="main_tflite">TF Lite</string>
+    <string name="main_tfmobile">TF Mobile</string>
+
+    <string name="main_error">오류</string>
+</resources>

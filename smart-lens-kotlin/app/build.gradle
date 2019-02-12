@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion compile_sdk
+    defaultConfig {
+        applicationId "com.example.smartlenskotlin"
+        minSdkVersion min_sdk
+        targetSdkVersion target_sdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    // https://medium.com/@joongwon/%EC%BD%94%ED%8B%80%EB%A6%B0-kotlin-with-dagger2-11fe36126dd6
+    kapt {
+        generateStubs = true
+        correctErrorTypes = true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.2-alpha01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.2-alpha01'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "androidx.recyclerview:recyclerview:$recycler"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+
+    implementation "com.google.android.material:material:$androidx"
+
+    // dagger : https://google.github.io/dagger/android
+    implementation "com.google.dagger:dagger:$dagger2"
+    implementation "com.google.dagger:dagger-android:$dagger2"
+    implementation "com.google.dagger:dagger-android-support:$dagger2" // if you use the support libraries
+
+    kapt "com.google.dagger:dagger-compiler:$dagger2"
+    kapt "com.google.dagger:dagger-android-processor:2.16"  // 애는 버전이 낮음
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+
+    // chip layout
+    implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
+
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+    implementation 'org.tensorflow:tensorflow-android:1.2.0'
+
+    // local lib
+    implementation project(path: ':common')
+}
