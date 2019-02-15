@@ -5,10 +5,7 @@ import com.example.clone_daum.di.module.common.AppModule
 import com.example.common.di.module.RxModule
 import com.example.common.di.module.ViewModelFactoryModule
 import com.example.smartlenskotlin.MainApp
-import com.example.smartlenskotlin.di.module.ActivityBindingModule
-import com.example.smartlenskotlin.di.module.Camera2Module
-import com.example.smartlenskotlin.di.module.TensorflowModule
-import com.example.smartlenskotlin.di.module.ViewModelModule
+import com.example.smartlenskotlin.di.module.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
@@ -30,6 +27,7 @@ import javax.inject.Singleton
     , ViewModelModule::class
     , TensorflowModule::class
     , Camera2Module::class
+    , ChipModule::class
     , ActivityBindingModule::class
 ])
 interface AppComponent {

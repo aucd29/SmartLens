@@ -3,6 +3,7 @@ package com.example.smartlenskotlin
 import android.Manifest
 import android.graphics.Color
 import android.os.Bundle
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.common.*
 import com.example.common.di.module.injectOfActivity
 import com.example.common.runtimepermission.PermissionParams
@@ -11,9 +12,13 @@ import com.example.smartlenskotlin.databinding.MainActivityBinding
 import com.example.smartlenskotlin.view.main.MainFragment
 import com.example.smartlenskotlin.view.main.MainViewModel
 import com.example.smartlenskotlin.view.main.TensorflowViewModel
+import javax.inject.Inject
 
 class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, MainViewModel>() {
     lateinit var mTfViewModel: TensorflowViewModel
+
+    @Inject
+    lateinit var layoutManager: ChipsLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +37,8 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, MainViewModel>(
         super.bindViewModel()
 
         mTfViewModel = mViewModelFactory.injectOfActivity(this@MainActivity, TensorflowViewModel::class.java)
+        mTfViewModel.chipLayoutManager.set(layoutManager)
+
         mBinding.setTfModel(mTfViewModel)
     }
 

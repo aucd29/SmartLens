@@ -18,6 +18,7 @@ import com.example.smartlenskotlin.widget.AutoFitTextureView
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -27,7 +28,8 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 12. <p/>
  */
 
-@Module(includes = [CameraDelegateModule::class])
+//@Module(includes = [CameraDelegateModule::class])
+@Module
 class Camera2Module {
     @Provides
     fun provideCameraManager(context: Context) =
@@ -38,18 +40,18 @@ class Camera2Module {
             context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 }
 
-@Module
-abstract class CameraDelegateModule {
-    @Binds
-    abstract fun bindCameraDelegate(delegate: CameraDelegate): Any
-}
-
+//@Module
+//abstract class CameraDelegateModule {
+//    @Binds
+//    abstract fun bindCameraDelegate(delegate: CameraDelegate): Any
+//}
 
 class CameraDelegate @Inject constructor(val context: Context
     , val cameraManager: CameraManager
     , val windowManager: WindowManager): CameraDevice.StateCallback() {
 
     companion object {
+        private val mLog = org.slf4j.LoggerFactory.getLogger(CameraDelegate::class.java)
         private val TAG = "CameraDelegate"
 
         const val MAX_PREVIEW_WIDTH  = 1920
@@ -137,6 +139,12 @@ class CameraDelegate @Inject constructor(val context: Context
     lateinit var mPreviewSize: Size
     lateinit var mCameraId: String
 
+    init {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("INJECT CAMERA DELEGATE")
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun open(w: Int, h: Int) {
         setup(w, h)
@@ -157,14 +165,16 @@ class CameraDelegate @Inject constructor(val context: Context
 
     fun close() {
         try {
-
-
             mCameraOpenCloseLock.acquire()
+
+            mCaptureSession?.close()
+            mCaptureSession = null
+
             mCameraDevice?.close()
             mCameraDevice = null
 
-
-
+            mImageReader?.close()
+            mImageReader = null
         } catch (e: InterruptedException) {
             throw java.lang.RuntimeException("Interrupted while trying to lock camera closing.", e)
         } finally {
@@ -422,11 +432,11 @@ class CameraDelegate @Inject constructor(val context: Context
 
             // 콜백 지옥.. =_ =
 
-            // 이것 때문에 min api level 이 28 이였군 ;;; 삐뚫어질듯.. =_ = [aucd29][2019. 2. 12.]
+            // 이것 때문에 min api level 이 26 이였군 ;;; 삐뚫어질듯.. =_ = [aucd29][2019. 2. 12.]
             mCameraDevice?.let { dap ->
                 dap.createCaptureSession(mutableListOf(surface, it.surface),
                     object: CameraCaptureSession.StateCallback() {
-                        override fun onConfigureFailed(session: CameraCaptureSession) {
+                        override fun onConfigured(session: CameraCaptureSession) {
                             mCaptureSession = session
 
                             try {
@@ -447,8 +457,13 @@ class CameraDelegate @Inject constructor(val context: Context
                             }
                         }
 
-                        override fun onConfigured(session: CameraCaptureSession) {
-                            mErrorCallback.value = "Failed"
+                        override fun onConfigureFailed(session: CameraCaptureSession) {
+                            mLog.error("ERROR: CAMERA CONFIG FAILED ")
+
+                            io.reactivex.Single.just(mErrorCallback)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe { callback -> callback.value = "Failed" }
                         }
                     }, null)
             }

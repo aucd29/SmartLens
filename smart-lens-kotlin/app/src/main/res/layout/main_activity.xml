@@ -40,6 +40,7 @@
                 android:textSize="32sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/camera_container"
+                android:text="@string/main_this_is"
         />
 
         <Button
@@ -57,12 +58,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/tf_method"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:bindLayoutManager="@{tfModel.chipLayoutManager}"
                 app:bindAdapter="@{tfModel.adapter}"
                 app:bindItems="@{tfModel.items}"
+                app:bindItemAnimator="@{tfModel.itemAnimator}"
+                android:background="#636363"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

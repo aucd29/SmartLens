@@ -31,5 +31,6 @@ data class TfRecognition(
         return id == newItem.id && title == newItem.title
     }
 
-    fun string() = "$id $title $confidence $location"
+    fun string() =
+        "$title${confidence?.run { String.format(" (%.1f%%)", this * 100.0f) }}"
 }

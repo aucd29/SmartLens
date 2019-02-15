@@ -1,5 +1,6 @@
 package com.example.smartlenskotlin.view.main
 
+import android.graphics.Bitmap
 import com.example.common.*
 import com.example.common.di.module.injectOfActivity
 import com.example.smartlenskotlin.databinding.MainFragmentBinding
@@ -19,6 +20,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, CameraViewModel>() 
     }
 
     override fun initViewBinding() {
+        mViewModel.cameraDelegate.mTextureView = mBinding.texture
     }
 
     override fun initViewModelEvents() {
@@ -34,9 +36,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, CameraViewModel>() 
                 }
             }
 
-            observe(croppedBitmapEvent) {
-                mTfViewModel.recognizeImage(it)
-            }
+            callback = { it?.let { mTfViewModel.recognizeImage(it)} }
+
+            // 겁나 느림 =_ =
+//            observe(croppedBitmapEvent) {
+//                mTfViewModel.recognizeImage(it)
+//            }
         }
     }
 

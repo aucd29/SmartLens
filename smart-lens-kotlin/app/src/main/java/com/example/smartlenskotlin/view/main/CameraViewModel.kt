@@ -6,14 +6,13 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.media.Image
 import android.media.ImageReader
-import android.util.Log
 import android.util.Size
 import androidx.lifecycle.AndroidViewModel
-import com.example.common.arch.SingleLiveEvent
 import com.example.smartlenskotlin.di.module.CameraDelegate
 import com.example.smartlenskotlin.di.module.CameraPreviewListener
 import com.example.smartlenskotlin.tf.detector.TfImageHelper
 import com.example.smartlenskotlin.tf.mobile.TfMobileDetector
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 /**
@@ -32,12 +31,11 @@ class CameraViewModel @Inject constructor(application: Application
 
     private var computing_: Boolean = false
 
-    val croppedBitmapEvent = SingleLiveEvent<Bitmap>()
+    var callback: ((Bitmap?) -> Unit)? = null
 
     init {
         cameraDelegate.mCameraPreviewListener = this
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -64,6 +62,9 @@ class CameraViewModel @Inject constructor(application: Application
     }
 
     override fun onImageAvailable(reader: ImageReader?) {
+        if (computing_)
+            return
+
         var image: Image? = null
 
         try {
@@ -81,12 +82,18 @@ class CameraViewModel @Inject constructor(application: Application
 
             image.close()
 
-            croppedBitmap_?.let {
-                croppedBitmapEvent.value = it
-            }
+            callback?.invoke(croppedBitmap_)
+
+            // 미친듯이 느림 =_ =
+//            dp.add(io.reactivex.Single.just(croppedBitmap_)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter { it != null }
+//                .subscribe { bmp ->
+//                    croppedBitmapEvent.value = bmp
+//                    computing_ = false
+//                })
         } catch (e: Exception) {
             e.printStackTrace()
-//            Log.e(TAG, "recognizeImage", e)
         } finally {
             image?.close()
 
