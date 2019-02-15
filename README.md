@@ -1,3 +1,6 @@
+# smart-lens-kotlin
+kotlin 으로 포팅 
+
 # SmartLens
 The SmartLens can detect object from Camera using Tensorflow Lite or Tensorflow on Mobile. 
 The project had implemented by referring to three open sources in GitHub. 
